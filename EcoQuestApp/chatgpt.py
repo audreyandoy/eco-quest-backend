@@ -56,13 +56,12 @@ user_data = {
     "activities": ["walked to work", "took bus to show", "walked to grocery"],
 }
 
-
 SYSTEM_TEXT = """As a sustainability expert, you will be advising our EcoQuest app user how to improve their habits
 for living more sustainably based on their usage data and topic provided.  Please provide only the text response 
 in 200 words or less, appropriate for middle school, and without greetings.  
 """
 
-PROMPT_TEXT = f"""Provide please provide one of the following based on the User Information (1) background educational material,
+PROMPT_TEXT = f"""Provide one of the following based on the User Information (1) background educational material,
 (2) a tip to the user on how to increase their good activity, or (3) how to add add new sustainability activities related
 to the challenge. User Information: 
 """
