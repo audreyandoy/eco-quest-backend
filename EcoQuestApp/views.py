@@ -1,7 +1,7 @@
 import math
 from django.shortcuts import render, get_object_or_404
-from .models import EcoTransport, Profile
-from .serializers import EcoTransportSerializer, ProfileSerializer
+from .models import EcoTransport
+from .serializers import EcoTransportSerializer
 from rest_framework import viewsets, generics, status
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import User, Group
@@ -14,6 +14,8 @@ POINTS_AWARDED_100GCO2 =  50
 
 # Create your views here.
 
+
+#=============api/eco-transport==================================
 #supports GET and POST for authenticated user.
 #for the current user token, return all EcoTransport Activities recorded[GET]
 #for the current user, add activity to the DB [POST]
@@ -21,12 +23,7 @@ class EcoTransportView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = EcoTransport.objects.all()
     serializer_class = EcoTransportSerializer
-
-    """ def get(self, request):
-        transportList = self.filter_queryset(self.get_queryset())
-        serialized_transportList = self.serializer_class(transportList, many=True)
-        return Response(data=serialized_transportList.data, status=status.HTTP_200_OK) """
-    
+  
     #filter the queryset by current user
     def get_queryset(self):
         return EcoTransport.objects.all().filter(user = self.request.user)
@@ -44,4 +41,15 @@ class EcoTransportView(generics.ListCreateAPIView):
         ecoTransport_points =math.floor(co2_reduced/100 * POINTS_AWARDED_100GCO2)
         serializer.save(co2_reduced = co2_reduced, ecoTransport_points = ecoTransport_points)
 
-        
+#=================api/eco-transport/<int:pk>=======================
+#supports GET for a single EcoTransport activity for an authenticated user
+class SingleEcoTransportActivityView(APIView):
+
+    permission_classes = [IsAuthenticated]
+    serializer_class = EcoTransportSerializer
+
+    def get(self, request, pk):
+        activity = get_object_or_404(EcoTransport, pk=pk)
+        serialized_activity =  self.serializer_class(activity)
+        return Response(data=serialized_activity.data, status=status.HTTP_200_OK)
+
