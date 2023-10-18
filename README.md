@@ -10,4 +10,4 @@ Then you can run the program using:
 python3 manage.py runserver
 ```
 
-The program will automaticall run on port 8000
+The program will automatically run on port 8000
