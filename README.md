@@ -37,14 +37,22 @@ python3 manage.py runserver
 
 The program will automatically run on port 8000
 
+# Data Admin Guidance
+
 To run the project you need to create a superuser for yourself.
 That way you can view the information through the admin interface (including adding users)
 ```
 python manage.py createsuperuser
 ```
 
+To migrate db models
+```
+python manage.py makemigrations
+python manage.py migrate
+```
+
 
 # URLS available
 
-*  Admin site:  http://127.0.0.1:8000/admin/
-*  EcoEducation App:  http://127.0.0.1:8000/api/eco-education/
+*  Admin site:  http://127.0.0.1:8000/admin
+*  EcoEducation App:  http://127.0.0.1:8000/api/eco-education

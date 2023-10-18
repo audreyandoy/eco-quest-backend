@@ -18,13 +18,16 @@ POINTS_AWARDED_100GCO2 =  50
 
 
 # Create your views here.
-
-# Top Level API
+# Top Level API Splash Page
 def index(request):
     return HttpResponse("Hello, sustainable world. You're at the EcoApp Top level index.")
 
 
 # Eco-Education view
+# TODO need to convert to a View class below
+# GET to retrieve the ChatGPT text
+# POST to post points to the database 5 points / read.
+
 def eco_education_view(request, new_content=False):
     if new_content:
         text = generate_custom_content(save_output=False, display_output=True)
@@ -41,12 +44,7 @@ class EcoTransportView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = EcoTransport.objects.all()
     serializer_class = EcoTransportSerializer
-
-    """ def get(self, request):
-        transportList = self.filter_queryset(self.get_queryset())
-        serialized_transportList = self.serializer_class(transportList, many=True)
-        return Response(data=serialized_transportList.data, status=status.HTTP_200_OK) """
-    
+  
     #filter the queryset by current user
     def get_queryset(self):
         return EcoTransport.objects.all().filter(user = self.request.user)
@@ -63,6 +61,16 @@ class EcoTransportView(generics.ListCreateAPIView):
         #for every 100g of co2 reduced, award 50 points
         ecoTransport_points =math.floor(co2_reduced/100 * POINTS_AWARDED_100GCO2)
         serializer.save(co2_reduced = co2_reduced, ecoTransport_points=ecoTransport_points)
+
+class SingleEcoTransportActivityView(APIView):
+
+    permission_classes = [IsAuthenticated]
+    serializer_class = EcoTransportSerializer
+
+    def get(self, request, pk):
+        activity = get_object_or_404(EcoTransport, pk=pk)
+        serialized_activity =  self.serializer_class(activity)
+        return Response(data=serialized_activity.data, status=status.HTTP_200_OK)
 
 
 # Profile Query

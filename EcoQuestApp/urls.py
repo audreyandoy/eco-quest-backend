@@ -7,4 +7,5 @@ urlpatterns = [
     path('eco-profile', views.EcoProfileView.as_view()),
     # path('eco-education', views.EcoEducationView.as_view()),
     path('eco-education', views.eco_education_view),
+    path('eco-transport/<int:pk>', views.SingleEcoTransportActivityView.as_view()),
 ]
