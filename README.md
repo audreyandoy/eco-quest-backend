@@ -44,4 +44,7 @@ python manage.py createsuperuser
 ```
 
 
+# URLS available
 
+*  Admin site:  http://127.0.0.1:8000/admin/
+*  EcoEducation App:  http://127.0.0.1:8000/api/eco-education/

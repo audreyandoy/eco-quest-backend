@@ -9,6 +9,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import authentication
 from django.http import HttpResponse
+from .chatgpt import provide_example_gpt_response, generate_custom_content
 
 
 CO2E_PERMILE_CAR_GRAMS = 400
@@ -21,6 +22,16 @@ POINTS_AWARDED_100GCO2 =  50
 # Top Level API
 def index(request):
     return HttpResponse("Hello, sustainable world. You're at the EcoApp Top level index.")
+
+
+# Eco-Education view
+def eco_education_view(request, new_content=False):
+    if new_content:
+        text = generate_custom_content(save_output=False, display_output=True)
+    else:
+        response = provide_example_gpt_response()
+        text = response["choices"][0]["message"]["content"].strip()
+    return HttpResponse(text)
 
 # EcoTransport Feature
 #supports GET and POST for authenticated user.
@@ -54,17 +65,15 @@ class EcoTransportView(generics.ListCreateAPIView):
         serializer.save(co2_reduced = co2_reduced, ecoTransport_points=ecoTransport_points)
 
 
-# EcoEducation Feature
-class EcoEducationView(generics.ListCreateAPIView):
+# Profile Query
+# TODO this doesn't seem to be working....
+class EcoProfileView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated]
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
+    lookup_field = 'user__username'
 
     def get_queryset(self):
         user = self.request.user
         print(Profile.objects.all().filter(user=user))
         return Profile.objects.all().filter(user=user)
-
-    # def EcoEducation(self, request):
-    #     return HttpResponse("Hello, sustainable world. You're at the EcoEducation index.")
-
