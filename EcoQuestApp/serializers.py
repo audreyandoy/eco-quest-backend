@@ -16,3 +16,8 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile
         fields = "__all__"
 
+
+class EcoEducationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EcoTransport
+        fields = "__all__"

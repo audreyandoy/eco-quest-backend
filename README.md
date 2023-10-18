@@ -17,7 +17,7 @@ Within the virtual environment, then you can install EcoQuest by:
 pipenv install
 ```
 
-The ChatGPT content generator requires a API key in order to run it.
+The ChatGPT content generator requires an API key in order to run it.
 You can create your own free account and generate the API key.
 Information for getting an OpenAI trial account is here:
 https://platform.openai.com/docs/guides/gpt
@@ -52,7 +52,7 @@ python manage.py migrate
 ```
 
 
-# URLS available
+# Endpoints available
 
 *  Admin site:  http://127.0.0.1:8000/admin
-*  EcoEducation App:  http://127.0.0.1:8000/api/eco-education
+*  EcoEducation EndPoint:  http://127.0.0.1:8000/api/eco-education  (right now only publishes text)
