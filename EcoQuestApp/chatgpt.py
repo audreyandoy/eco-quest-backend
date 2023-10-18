@@ -20,7 +20,6 @@ import time
 import openai
 import requests
 from transformers import AutoTokenizer
-from .models import Profile, EcoTransport
 
 NEW_CHATGPT = False
 
@@ -110,7 +109,7 @@ def generate_custom_content(
     )
 
     # Extract the text from the GPT-3 response
-    text = completion.choices[0].message.content.strip()
+    text = completion["choices"][0]["message"]["content"].strip()
 
     if display_output:
         print("Selected model" + MODEL + "\n")
@@ -119,14 +118,14 @@ def generate_custom_content(
         print(messages)
         print()
 
-        print(completion.choices[0].message)
-        print(completion.usage)
+        print(completion["choices"][0]["message"])
+        print(completion["usage"])
 
     if save_output:
         with open(
             os.path.join(output_folder, f"chatgpt_result_{current_time}.txt"), "w"
         ) as file:
-            file.write(completion.choices[0].message.content)
+            file.write(completion["choices"][0]["message"]["content"])
 
         with open(
             os.path.join(output_folder, f"chatgpt_full_result_{current_time}.json"), "w"
@@ -136,9 +135,16 @@ def generate_custom_content(
     return text
 
 
+def provide_example_gpt_response():
+    f = open(os.path.join(os.path.dirname(__file__), 'chatgpt_full_result_example.json'))
+    r = json.load(f)
+    f.close()
+    return r
+
+
 if __name__ == "__main__":
     if NEW_CHATGPT:
         generate_custom_content(save_output=True, display_output=True)
-
-    print(Profile.objects.all())
-    print(EcoTransport.objects.all())
+    else:
+        response = provide_example_gpt_response()
+        print(response["choices"][0]["message"]["content"].strip())
