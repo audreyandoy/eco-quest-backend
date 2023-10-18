@@ -20,7 +20,9 @@ import time
 import openai
 import requests
 from transformers import AutoTokenizer
+from .models import Profile, EcoTransport
 
+NEW_CHATGPT = False
 
 #  App house-keeping
 current_time = time.time()
@@ -135,4 +137,8 @@ def generate_custom_content(
 
 
 if __name__ == "__main__":
-    generate_custom_content(save_output=True, display_output=True)
+    if NEW_CHATGPT:
+        generate_custom_content(save_output=True, display_output=True)
+
+    print(Profile.objects.all())
+    print(EcoTransport.objects.all())

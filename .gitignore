@@ -23,6 +23,7 @@ gen/
 *.bak
 *.tmp
 .tags
+db.sqlite3
 
 ########################
 ## compiler output files

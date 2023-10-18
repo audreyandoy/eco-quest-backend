@@ -10,6 +10,8 @@ source .venv/bin/activate   # activate virtualenv on linux
 pip install pipenv
 ```
 
+https://lincolnloop.com/insights/using-pyprojecttoml-in-your-django-project/
+
 Within the virtual environment, then you can install EcoQuest by:
 ```
 pipenv install
@@ -34,3 +36,12 @@ python3 manage.py runserver
 ```
 
 The program will automatically run on port 8000
+
+To run the project you need to create a superuser for yourself.
+That way you can view the information through the admin interface (including adding users)
+```
+python manage.py createsuperuser
+```
+
+
+

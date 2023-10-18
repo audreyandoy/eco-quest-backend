@@ -15,6 +15,7 @@ class EcoTransport(models.Model):
 
 class Profile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    location = models.CharField(max_length=50, null=True, blank=True)
     streak = models.SmallIntegerField(null=True, blank=True)
     total_points = models.SmallIntegerField(null=True, blank=True)
     total_co2e_reduced = models.FloatField(null=True, blank=True)
