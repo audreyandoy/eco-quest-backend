@@ -84,9 +84,7 @@ def eco_education_view(request, new_content=False):
     return HttpResponse(text)
 
 
-# TODO need to convert to a View class below
 # GET to retrieve the ChatGPT text, requires userid of some sort
-# POST to post points to the database 5 points / read, requires userid & text read?
 class EcoEducationView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = EcoEducation.objects.all()
@@ -96,15 +94,7 @@ class EcoEducationView(generics.ListCreateAPIView):
     def get_queryset(self):
         return EcoEducation.objects.all().filter(user=self.request.user)
 
-    # Need to update this section
-    # def perform_create(self, serializer):
-    #     activity = serializer.validated_data['activity']
-    #     distance = serializer.validated_data['distance']
-    #     if activity == "walk" or activity == "bicyle":
-    #         co2_reduced = distance * CO2E_PERMILE_CAR_GRAMS
-    #     # activity = bus
-    #     else:
-    #         co2_reduced = distance * CO2E_PERMILE_BUS_GRAMS
-    #     # for every 100g of co2 reduced, award 50 points
-    #     ecoTransport_points = math.floor(co2_reduced / 100 * POINTS_AWARDED_100GCO2)
-    #     serializer.save(co2_reduced=co2_reduced, ecoTransport_points=ecoTransport_points)
+    def perform_create(self, serializer):
+        # Assign 5 points for every passage read
+        # want to post text to read what was last?
+        serializer.save(ecoEducation_points=5)

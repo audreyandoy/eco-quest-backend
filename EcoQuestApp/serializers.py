@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import EcoTransport, Profile
+from .models import EcoTransport, Profile, EcoEducation
 from django.contrib.auth.models import User, Group
 
 class EcoTransportSerializer(serializers.ModelSerializer):
@@ -19,5 +19,5 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 class EcoEducationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = EcoTransport
+        model = EcoEducation
         fields = "__all__"
