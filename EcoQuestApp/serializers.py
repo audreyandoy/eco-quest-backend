@@ -6,6 +6,7 @@ class EcoTransportSerializer(serializers.ModelSerializer):
     co2_reduced = serializers.ReadOnlyField()
     ecoTransport_points =  serializers.ReadOnlyField()
     activity_date = serializers.ReadOnlyField()
+    
     class Meta:
         model = EcoTransport
         fields = "__all__"
