@@ -28,8 +28,11 @@ POINTS_AWARDED_100GCO2 =  50
 #for the current user, add activity to the DB [POST]
 
 class EcoMealsView(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated]
-    queryset = EcoMeals.objects.all()
+    # permission_classes = [IsAuthenticated]
     serializer_class = EcoMealsSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return EcoMeals.objects.filter(user=user)
 #=================api/eco-meals/<int:pk>=======================
 #supports GET for a single EcoMeals activity for an authenticated user
