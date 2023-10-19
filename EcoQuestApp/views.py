@@ -1,7 +1,7 @@
 import math
 from django.shortcuts import render, get_object_or_404
-from .models import EcoTransport, Profile
-from .serializers import EcoTransportSerializer, ProfileSerializer
+from .models import EcoTransport, Profile, EcoEducation
+from .serializers import EcoTransportSerializer, ProfileSerializer, EcoEducationSerializer
 from rest_framework import viewsets, generics, status
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import User, Group
@@ -22,19 +22,6 @@ POINTS_AWARDED_100GCO2 =  50
 def index(request):
     return HttpResponse("Hello, sustainable world. You're at the EcoApp Top level index.")
 
-
-# Eco-Education view
-# TODO need to convert to a View class below
-# GET to retrieve the ChatGPT text
-# POST to post points to the database 5 points / read.
-
-def eco_education_view(request, new_content=False):
-    if new_content:
-        text = generate_custom_content(save_output=False, display_output=True)
-    else:
-        response = provide_example_gpt_response()
-        text = response["choices"][0]["message"]["content"].strip()
-    return HttpResponse(text)
 
 # EcoTransport Feature
 #supports GET and POST for authenticated user.
@@ -73,7 +60,7 @@ class SingleEcoTransportActivityView(APIView):
         return Response(data=serialized_activity.data, status=status.HTTP_200_OK)
 
 
-# Profile Query
+# Profile View
 # TODO this doesn't seem to be working....
 class EcoProfileView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated]
@@ -85,3 +72,39 @@ class EcoProfileView(generics.RetrieveAPIView):
         user = self.request.user
         print(Profile.objects.all().filter(user=user))
         return Profile.objects.all().filter(user=user)
+
+
+# EcoEducation View
+def eco_education_view(request, new_content=False):
+    if new_content:
+        text = generate_custom_content(save_output=False, display_output=True)
+    else:
+        response = provide_example_gpt_response()
+        text = response["choices"][0]["message"]["content"].strip()
+    return HttpResponse(text)
+
+
+# TODO need to convert to a View class below
+# GET to retrieve the ChatGPT text, requires userid of some sort
+# POST to post points to the database 5 points / read, requires userid & text read?
+class EcoEducationView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = EcoEducation.objects.all()
+    serializer_class = EcoEducationSerializer
+
+    # filter the queryset by current user
+    def get_queryset(self):
+        return EcoEducation.objects.all().filter(user=self.request.user)
+
+    # Need to update this section
+    # def perform_create(self, serializer):
+    #     activity = serializer.validated_data['activity']
+    #     distance = serializer.validated_data['distance']
+    #     if activity == "walk" or activity == "bicyle":
+    #         co2_reduced = distance * CO2E_PERMILE_CAR_GRAMS
+    #     # activity = bus
+    #     else:
+    #         co2_reduced = distance * CO2E_PERMILE_BUS_GRAMS
+    #     # for every 100g of co2 reduced, award 50 points
+    #     ecoTransport_points = math.floor(co2_reduced / 100 * POINTS_AWARDED_100GCO2)
+    #     serializer.save(co2_reduced=co2_reduced, ecoTransport_points=ecoTransport_points)
