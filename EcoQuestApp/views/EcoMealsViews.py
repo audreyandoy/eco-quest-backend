@@ -25,7 +25,7 @@ POINTS_AWARDED_100GCO2 =  50
 #=============api/eco-meals==================================
 #supports GET and POST for authenticated user.
 #for the current user token, return all EcoMeals Activities recorded[GET]
-#for the current user, add activity to the DB [POST]
+#for the current user, add EcoMeals instance to the database [POST]
 
 class EcoMealsView(generics.ListCreateAPIView):
     # permission_classes = [IsAuthenticated]
@@ -34,5 +34,11 @@ class EcoMealsView(generics.ListCreateAPIView):
     def get_queryset(self):
         user = self.request.user
         return EcoMeals.objects.filter(user=user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    
+
 #=================api/eco-meals/<int:pk>=======================
 #supports GET for a single EcoMeals activity for an authenticated user
