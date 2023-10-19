@@ -12,6 +12,9 @@ class EcoTransportSerializer(serializers.ModelSerializer):
 
  
 class ProfileSerializer(serializers.ModelSerializer):
+    total_co2e_reduced = serializers.ReadOnlyField()
+    total_points =  serializers.ReadOnlyField()
+    streak = serializers.ReadOnlyField()
     class Meta:
         model = Profile
         fields = "__all__"
