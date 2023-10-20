@@ -115,12 +115,12 @@ class EcoEducationView(generics.ListCreateAPIView):
 #for the current user, add EcoMeals instance to the database [POST]
 
 class EcoMealsView(generics.ListCreateAPIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     serializer_class = EcoMealsSerializer
 
     def get_queryset(self):
         user = self.request.user
-        return EcoMeals.objects.filter(user=user)
+        return EcoMeals.objects.all()
 
     def perform_create(self, serializer):
         # Saves EcoMeals instance
