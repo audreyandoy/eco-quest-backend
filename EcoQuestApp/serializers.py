@@ -3,7 +3,7 @@ from .models import EcoTransport, Profile
 from django.contrib.auth.models import User, Group
 
 class EcoTransportSerializer(serializers.ModelSerializer):
-    co2_reduced = serializers.ReadOnlyField()
+    transport_co2_reduced = serializers.ReadOnlyField()
     ecoTransport_points =  serializers.ReadOnlyField()
     activity_date = serializers.ReadOnlyField()
     class Meta:
