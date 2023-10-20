@@ -8,4 +8,6 @@ urlpatterns = [
     # path('eco-education', views.EcoEducationView.as_view()),
     path('eco-education', views.eco_education_view),
     path('eco-transport/<int:pk>', views.SingleEcoTransportActivityView.as_view()),
+    path('eco-meals', views.EcoMealsView.as_view()),
+    path('eco-meals/<int:pk>', views.SingleEcoMealsInstanceView.as_view())
 ]
