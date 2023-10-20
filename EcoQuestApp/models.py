@@ -36,4 +36,22 @@ class EcoEducation(models.Model):
     text = models.CharField(max_length=2000, null=True, blank=True)  # store text that was read
 
     def __str__(self):
+<<<<<<< HEAD
+        return self.user.username
+
+
+class EcoMeals(models.Model):
+    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    eco_breakfast = models.BooleanField(default=False)
+    eco_lunch = models.BooleanField(default=False)
+    eco_dinner = models.BooleanField(default=False)
+    co2_reduced = models.FloatField(null=True, blank=True)
+    ecomeals_points = models.SmallIntegerField(null=True, blank=True)
+    entry_date = models.DateField(db_index = True, auto_now=True)
+
+    def __str__(self):
+        return self.user.username
+    
+=======
         return self.activity_date
+>>>>>>> origin/main
