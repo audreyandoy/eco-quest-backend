@@ -8,10 +8,12 @@ django = "*"
 openai = "*"
 transformers = "*"
 djangorestframework = "*"
+django-cors-headers = "*"
 
 [dev-packages]
 black = "*"
 flake8 = "*"
+httpie = "*"
 
 [requires]
 python_version = ">=3.10"
