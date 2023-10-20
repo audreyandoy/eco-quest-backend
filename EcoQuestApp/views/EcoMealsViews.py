@@ -70,4 +70,10 @@ class EcoMealsView(generics.ListCreateAPIView):
     
 
 #=================api/eco-meals/<int:pk>=======================
-#supports GET for a single EcoMeals activity for an authenticated user
+#supports GET for a single EcoMeals instance for an authenticated user
+
+class SingleEcoMealsInstanceView():
+    serializer_class = EcoMealsSerializer
+
+    def get():
+        pass
