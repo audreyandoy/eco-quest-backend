@@ -161,7 +161,7 @@ class EcoMealsView(generics.ListCreateAPIView):
 class SingleEcoMealsInstanceView(generics.RetrieveAPIView):
     serializer_class = EcoMealsSerializer
 
-    def retrieve(self, pk=None):
+    def retrieve(self, request, pk=None):
         # Fetch the model instance
         ecomeal_instance = get_object_or_404(EcoMeals, pk=pk)
 
