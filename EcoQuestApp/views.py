@@ -107,7 +107,6 @@ class EcoEducation(APIView):
     # permission_classes = [IsAuthenticated]
     serializer_class = EcoEducationSerializer
 
-<<<<<<< HEAD
     # filter the queryset by current user
     def get_queryset(self):
         return EcoEducation.objects.all().filter(user=self.request.user)
@@ -200,7 +199,6 @@ class SingleEcoMealsInstanceView(generics.RetrieveAPIView):
     #     # for every 100g of co2 reduced, award 50 points
     #     ecoTransport_points = math.floor(co2_reduced / 100 * POINTS_AWARDED_100GCO2)
     #     serializer.save(co2_reduced=co2_reduced, ecoTransport_points=ecoTransport_points)
-=======
     def get(self, request, new_content=False, format=None):
         if new_content:
             text = generate_custom_content(max_tokens=200, save_output=False, display_output=True)
@@ -218,4 +216,3 @@ class SingleEcoMealsInstanceView(generics.RetrieveAPIView):
             # want to post text to read what was last?
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
->>>>>>> origin/main

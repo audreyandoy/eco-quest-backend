@@ -36,7 +36,6 @@ class EcoEducation(models.Model):
     text = models.CharField(max_length=2000, null=True, blank=True)  # store text that was read
 
     def __str__(self):
-<<<<<<< HEAD
         return self.user.username
 
 
@@ -52,6 +51,4 @@ class EcoMeals(models.Model):
     def __str__(self):
         return self.user.username
     
-=======
         return self.activity_date
->>>>>>> origin/main
