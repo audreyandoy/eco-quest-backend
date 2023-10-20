@@ -96,7 +96,7 @@ class EcoEducation(APIView):
     POST -  Creates a new 5 point entry for the user reading the text,
             if "text", is passed back it logs the text as well --> may use for future inputs
     """
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     serializer_class = EcoEducationSerializer
 
     def get(self, request, new_content=False, format=None):
