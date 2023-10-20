@@ -44,11 +44,11 @@ CREATE TABLE plantbased_activity (
 ------------------ PLANTBASED ACTIVITY TABLE ------------------          
 INSERT INTO plantbased_activity(
         user_id,
-        eco_breakfast bool,
-        eco_lunch bool,
-        eco_dinner bool,
-        co2_reduced int,
-        ecomeals_points int,
+        eco_breakfast,
+        eco_lunch,
+        eco_dinner,
+        co2_reduced,
+        ecomeals_points,
     )
 VALUES (
         3,
@@ -60,11 +60,11 @@ VALUES (
     );
 INSERT INTO plantbased_activity(
         user_id,
-        eco_breakfast bool,
-        eco_lunch bool,
-        eco_dinner bool,
-        co2_reduced int,
-        ecomeals_points int,
+        eco_breakfast,
+        eco_lunch,
+        eco_dinner,
+        co2_reduced,
+        ecomeals_points,
     )
 VALUES (
         2,
@@ -76,11 +76,11 @@ VALUES (
     );
 INSERT INTO plantbased_activity(
         user_id,
-        eco_breakfast bool,
-        eco_lunch bool,
-        eco_dinner bool,
-        co2_reduced int,
-        ecomeals_points int,
+        eco_breakfast,
+        eco_lunch,
+        eco_dinner,
+        co2_reduced,
+        ecomeals_points,
     )
 VALUES (
         3,
