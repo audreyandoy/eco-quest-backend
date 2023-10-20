@@ -28,14 +28,12 @@ class EcoTransport(models.Model):
         return self.activity
     
 
-
-
 class EcoEducation(models.Model):
     user = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    activity = models.CharField(max_length=50)  # this will be the same for all
-    ecoEducation_points = models.SmallIntegerField(null=True, blank=True)  # 5 points per reading activity
-    activity_date = models.DateField(db_index=True, auto_now=True)
-    # text = models.CharField(max_length=2000) # future if we want to store the text that was queried
+    # activity = models.CharField(max_length=50)  # to be inline with other activities
+    points = models.SmallIntegerField(null=True, blank=True)  # 5 points per reading activity
+    activity_date = models.DateTimeField(db_index=True, auto_now=True)
+    text = models.CharField(max_length=2000, null=True, blank=True)  # store text that was read
 
     def __str__(self):
-        return self.user.username
+        return self.activity_date
