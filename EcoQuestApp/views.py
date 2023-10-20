@@ -152,7 +152,36 @@ class EcoMealsView(generics.ListCreateAPIView):
     def get_ecomeals_points(self, user_co2_reduced):
         ecomeals_points = math.floor(user_co2_reduced / 100 * POINTS_AWARDED_100GCO2)
 
-        return ecomeals_points 
+        return ecomeals_points
+
+#=================api/eco-meals/<int:pk>=======================
+#supports GET for a single EcoMeals instance queried by primary key
+
+class SingleEcoMealsInstanceView(generics.RetrieveAPIView):
+    serializer_class = EcoMealsSerializer
+
+    def retrieve(self, pk=None):
+        # Fetch the model instance
+        ecomeal_instance = get_object_or_404(EcoMeals, pk=pk)
+
+        # Determine which meal was plant-based
+        ecomeal = None
+        
+        if ecomeal_instance.eco_breakfast == True:
+            ecomeal = "Breakfast"
+        elif ecomeal_instance.eco_lunch == True:
+            ecomeal = "Lunch"
+        elif ecomeal_instance.eco_dinner == True:
+            ecomeal = "Dinner"
+        
+        # Create response data
+        response_data = {"meal_type": ecomeal,
+                         "co2_reduced": ecomeal_instance.co2_reduced,
+                         "date_logged": ecomeal_instance.entry_date
+                         }
+        
+        # Return response data
+        return Response(response_data, status=200) 
     
     # Need to update this section
     # def perform_create(self, serializer):
