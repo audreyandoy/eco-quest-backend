@@ -56,3 +56,6 @@ python manage.py migrate
 
 *  Admin site:  http://127.0.0.1:8000/admin
 *  EcoEducation EndPoint:  http://127.0.0.1:8000/api/eco-education  (right now only publishes text)
+*  Ecotransport list endpoint: http://127.0.0.1:8000/api/eco-transport   (supports List i.e. provides list of challenges recorded for the authenticated user, and Create i.e. an authenticated user can record a challenge)
+*  Ecotransport single activity view endpoint: http://127.0.0.1:8000/api/eco-transport/<int:pk>  (fetches data for a specific activity for the authenticated user)
+*  

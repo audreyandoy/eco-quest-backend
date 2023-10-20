@@ -4,7 +4,7 @@ from .models import EcoTransport, Profile, EcoEducation
 from .serializers import EcoTransportSerializer, ProfileSerializer, EcoEducationSerializer
 from rest_framework import viewsets, generics, status
 from rest_framework.permissions import IsAuthenticated
-from django.contrib.auth.models import User, Group
+#from django.contrib.auth.models import User, Group
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import authentication
@@ -24,17 +24,18 @@ def index(request):
 
 
 # EcoTransport Feature
-#supports GET and POST for authenticated user.
-#for the current user token, return all EcoTransport Activities recorded[GET]
-#for the current user, add activity to the DB [POST]
+#--------------api/eco-transport----------------
+#supports GET and POST 
+#Returns all EcoTransport Activities recorded for all users[GET]
+#Supports recording of an activity to the DB [POST]
 class EcoTransportView(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
     queryset = EcoTransport.objects.all()
     serializer_class = EcoTransportSerializer
   
     #filter the queryset by current user
     def get_queryset(self):
-        return EcoTransport.objects.all().filter(user = self.request.user)
+        return EcoTransport.objects.all()
     
     #calculate carbon footprint and points and save them as part of the record   
     def perform_create(self, serializer):
@@ -49,9 +50,12 @@ class EcoTransportView(generics.ListCreateAPIView):
         ecoTransport_points =math.floor(co2_reduced/100 * POINTS_AWARDED_100GCO2)
         serializer.save(co2_reduced = co2_reduced, ecoTransport_points=ecoTransport_points)
 
+#-------api/eco-transport/<int:pk>-----------
+#supports GET for single Eco transport activity
+
 class SingleEcoTransportActivityView(APIView):
 
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
     serializer_class = EcoTransportSerializer
 
     def get(self, request, pk):
