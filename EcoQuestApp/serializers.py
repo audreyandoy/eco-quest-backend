@@ -24,13 +24,11 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 class EcoEducationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = EcoTransport
+        model = EcoEducation
         fields = "__all__"
 
 
 class EcoMealsSerializer(serializers.ModelSerializer):
     class Meta:
         model = EcoMeals
-        fields = "__all__"
-        model = EcoEducation
         fields = "__all__"

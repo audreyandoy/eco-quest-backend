@@ -111,6 +111,25 @@ class EcoEducation(APIView):
     def get_queryset(self):
         return EcoEducation.objects.all().filter(user=self.request.user)
     
+    def get(self, request, new_content=False, format=None):
+        if new_content:
+            text = generate_custom_content(max_tokens=200, save_output=False, display_output=True)
+        else:
+            response = provide_example_gpt_response()
+            text = response["choices"][0]["message"]["content"].strip()
+
+        return Response(data={"text": text}, status=status.HTTP_200_OK)
+
+    def post(self, request, format=None):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            serializer.save(points=5)
+            # Assign 5 points for every passage read
+            # want to post text to read what was last?
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    
 
 #=============api/eco-meals==================================
 #supports GET and POST for authenticated user.
@@ -163,10 +182,11 @@ class EcoMealsView(generics.ListCreateAPIView):
 
 class SingleEcoMealsInstanceView(generics.RetrieveAPIView):
     serializer_class = EcoMealsSerializer
+    queryset = EcoMeals.objects.all()
 
-    def retrieve(self, request, pk=None):
+    def create_response(self, response, queryset):
         # Fetch the model instance
-        ecomeal_instance = get_object_or_404(EcoMeals, pk=pk)
+        ecomeal_instance = get_object_or_404(queryset)
 
         # Determine which meal was plant-based
         ecomeal = None
@@ -199,20 +219,4 @@ class SingleEcoMealsInstanceView(generics.RetrieveAPIView):
     #     # for every 100g of co2 reduced, award 50 points
     #     ecoTransport_points = math.floor(co2_reduced / 100 * POINTS_AWARDED_100GCO2)
     #     serializer.save(co2_reduced=co2_reduced, ecoTransport_points=ecoTransport_points)
-    def get(self, request, new_content=False, format=None):
-        if new_content:
-            text = generate_custom_content(max_tokens=200, save_output=False, display_output=True)
-        else:
-            response = provide_example_gpt_response()
-            text = response["choices"][0]["message"]["content"].strip()
-
-        return Response(data={"text": text}, status=status.HTTP_200_OK)
-
-    def post(self, request, format=None):
-        serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid():
-            serializer.save(points=5)
-            # Assign 5 points for every passage read
-            # want to post text to read what was last?
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+  
