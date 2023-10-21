@@ -81,6 +81,7 @@ class EcoProfileView(generics.RetrieveAPIView):
 # EcoEducation View
 def eco_education_view(request, new_content=False):
     """
+    Basic view
     return raw text content from chatgpt
     """
     if new_content:
@@ -90,17 +91,25 @@ def eco_education_view(request, new_content=False):
         text = response["choices"][0]["message"]["content"].strip()
     return HttpResponse(text)
 
+
 class EcoEducation(APIView):
     """
-    GET -   Returns a new ChatGPT generated text
+    GET -   Returns a new ChatGPT generated text for the sent "user_id"
     POST -  Creates a new 5 point entry for the user reading the text,
-            if "text", is passed back it logs the text as well --> may use for future inputs
+            if "text", is passed in POST log the text
     """
     # permission_classes = [IsAuthenticated]
     serializer_class = EcoEducationSerializer
 
     def get(self, request, new_content=False, format=None):
+        serializer = self.serializer_class(data=request.data)
+        print(serializer.is_valid())
+        if serializer.is_valid():
+            print(serializer.validated_data)
+        # user_info = Profile.objects.filter(id=self.request.user)
+        # print(user_info)
         if new_content:
+            print("why calling new content?")
             text = generate_custom_content(max_tokens=200, save_output=False, display_output=True)
         else:
             response = provide_example_gpt_response()

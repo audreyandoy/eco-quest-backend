@@ -31,7 +31,8 @@ if not os.path.exists(output_folder):
 
 # Select Model
 # models = openai.Model.list()
-MODEL = "gpt-4-0314"  # "gpt-3.5-turbo"  # "gpt2"
+MODEL = "gpt-4-0314"
+# MODEL = "gpt-3.5-turbo"  # "gpt2"
 
 # Stored Prompts
 EXAMPLE_USER_DATA = {  # Example User Data
@@ -41,12 +42,12 @@ EXAMPLE_USER_DATA = {  # Example User Data
 
 EXAMPLE_PREVIOUS_CONTENT = None
 
-SYSTEM_TEXT = """As a sustainability expert, you will be advising our EcoQuest app user how to improve their habits
+SYSTEM_TEXT = """As a sustainability expert, advise our EcoQuest app user how to improve their habits
 for living more sustainably based on their usage data and topic provided.  Please provide only the text response 
 in 200 words or less, appropriate for middle school, and without greetings.  
 """
 
-PROMPT_TEXT = f"""Provide one of the following based on the User Information (1) background educational material,
+PROMPT_TEXT = f"""Provide one of the following based on the User Information (1) detailed background educational material on the challenge topic,
 (2) a tip to the user on how to increase their good activity, or (3) how to add add new sustainability activities related
 to the challenge. User Information: 
 """
@@ -72,8 +73,6 @@ def estimate_tokens(text, model_name="gpt2"):
 # TODO #1 need one to retrieve user data from database and pre-process to reduce tokens
 # TODO #2 potentially save response to database to keep for seeding next prompt/speeding up service
 # TODO #3 function to get last saved prompt
-# TODO #4 how to handle when text is marked "read" and given points?  Per "quest".
-
 
 # Function to call GPT and generate content based on the conversation context and user profile.
 def generate_custom_content(
@@ -101,11 +100,13 @@ def generate_custom_content(
     messages = [
         {"role": "system", "content": SYSTEM_TEXT},
         {"role": "user", "content": prompt},
+        # {"role": "system", "content": "You are a ChatGPT expert"},
+        # {"role": "user", "content": "How do I fix the 502 bad gateway error?"},
     ]
 
     # Get ChatGPT Response
     completion = openai.ChatCompletion.create(
-        model=MODEL, messages=messages, max_tokens=max_tokens
+        model=MODEL, messages=messages, # max_tokens=max_tokens
     )
 
     # Extract the text from the GPT-3 response
@@ -143,6 +144,8 @@ def provide_example_gpt_response():
 
 
 if __name__ == "__main__":
+    print("Is it calling this?")
+    print (NEW_CHATGPT)
     if NEW_CHATGPT:
         generate_custom_content(save_output=True, display_output=True)
     else:

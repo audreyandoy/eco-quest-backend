@@ -59,3 +59,12 @@ python manage.py migrate
 *  Ecotransport list endpoint: http://127.0.0.1:8000/api/eco-transport   (supports List i.e. provides list of challenges recorded for the authenticated user, and Create i.e. an authenticated user can record a challenge)
 *  Ecotransport single activity view endpoint: http://127.0.0.1:8000/api/eco-transport/<int:pk>  (fetches data for a specific activity for the authenticated user)
 *  
+
+
+# Testing
+You can use httpie in the dev dependencies to test.  Since our URLs are currently setup without a `/` at the end 
+make sure a GET with parameters looks something line this:
+
+```
+http GET http://127.0.0.1:8000/api/eco-education?user_id=1
+```
