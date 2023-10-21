@@ -220,7 +220,7 @@ class EcoMealsView(generics.ListCreateAPIView):
         self.update_user_profile(user, co2_reduced, ecomeals_points)
 
 
-    def get_co2_reduced(self, user_ecomeals_input):
+    def calculate_co2_reduced(self, user_ecomeals_input):
         co2_reduced = 0
 
         if user_ecomeals_input['eco_breakfast'] == True:
@@ -234,12 +234,12 @@ class EcoMealsView(generics.ListCreateAPIView):
         
         return co2_reduced
 
-    def get_ecomeals_points(self, user_co2_reduced):
+    def calculate_ecomeals_points(user_co2_reduced):
         ecomeals_points = math.floor(user_co2_reduced / 100 * POINTS_AWARDED_100GCO2)
 
         return ecomeals_points
 
-    def update_user_profile(self, user, user_co2_reduced, user_ecomeals_points):
+    def update_user_profile(user, user_co2_reduced, user_ecomeals_points):
         profile = Profile.objects.get(user=user)
         profile.total_co2e_reduced += user_co2_reduced
         profile.total_points += user_ecomeals_points
