@@ -174,6 +174,25 @@ class EcoEducation(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
    
     
+    def get(self, request, new_content=False, format=None):
+        if new_content:
+            text = generate_custom_content(max_tokens=200, save_output=False, display_output=True)
+        else:
+            response = provide_example_gpt_response()
+            text = response["choices"][0]["message"]["content"].strip()
+
+        return Response(data={"text": text}, status=status.HTTP_200_OK)
+
+    def post(self, request, format=None):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            serializer.save(points=5)
+            # Assign 5 points for every passage read
+            # want to post text to read what was last?
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    
 
 #=============api/eco-meals==================================
 #supports GET and POST for authenticated user.
@@ -188,6 +207,7 @@ class EcoMealsView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         # Saves EcoMeals instance
+        user = serializer.validated_data['user']
         eco_breakfast = serializer.validated_data['eco_breakfast']
         eco_lunch = serializer.validated_data['eco_lunch']
         eco_dinner = serializer.validated_data['eco_dinner']
@@ -202,7 +222,11 @@ class EcoMealsView(generics.ListCreateAPIView):
         eco_meals_instance.ecomeals_points = ecomeals_points
         eco_meals_instance.save()
 
-    def get_co2_reduced(self, user_ecomeals_input):
+        # Update Profile with points from EcoMeals
+        self.update_user_profile(user, co2_reduced, ecomeals_points)
+
+
+    def calculate_co2_reduced(self, user_ecomeals_input):
         co2_reduced = 0
 
         if user_ecomeals_input['eco_breakfast'] == True:
@@ -216,39 +240,36 @@ class EcoMealsView(generics.ListCreateAPIView):
         
         return co2_reduced
 
-    def get_ecomeals_points(self, user_co2_reduced):
+    def calculate_ecomeals_points(user_co2_reduced):
         ecomeals_points = math.floor(user_co2_reduced / 100 * POINTS_AWARDED_100GCO2)
 
         return ecomeals_points
 
-#=================api/eco-meals/<int:pk>=======================
-#supports GET for a single EcoMeals instance queried by primary key
+    def update_user_profile(user, user_co2_reduced, user_ecomeals_points):
+        profile = Profile.objects.get(user=user)
+        profile.total_co2e_reduced += user_co2_reduced
+        profile.total_points += user_ecomeals_points
+        profile.save()
 
-class SingleEcoMealsInstanceView(generics.RetrieveAPIView):
+#=================api/eco-meals/<int:pk>=======================
+#supports GET for all EcoMeals associated with the specified primary key
+
+class SingleUserAllEcoMealInstancesView(generics.ListAPIView):
     serializer_class = EcoMealsSerializer
 
-    def retrieve(self, request, pk=None):
-        # Fetch the model instance
-        ecomeal_instance = get_object_or_404(EcoMeals, pk=pk)
+    def get_queryset(self):
+        user_id = self.kwargs.get('pk')
+        return EcoMeals.objects.filter(user=user_id)
 
-        # Determine which meal was plant-based
-        ecomeal = None
-        
-        if ecomeal_instance.eco_breakfast == True:
-            ecomeal = "Breakfast"
-        elif ecomeal_instance.eco_lunch == True:
-            ecomeal = "Lunch"
-        elif ecomeal_instance.eco_dinner == True:
-            ecomeal = "Dinner"
-        
-        # Create response data
-        response_data = {"meal_type": ecomeal,
-                         "co2_reduced": ecomeal_instance.co2_reduced,
-                         "date_logged": ecomeal_instance.entry_date
-                         }
-        
-        # Return response data
-        return Response(response_data, status=200) 
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True) 
+
+        response_data = {
+            'EcoMeals': serializer.data
+        }
+
+        return Response(response_data, status=200)
     
     # Need to update this section
     # def perform_create(self, serializer):

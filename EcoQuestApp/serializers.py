@@ -23,13 +23,21 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 class EcoEducationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = EcoTransport
+        model = EcoEducation
         fields = "__all__"
 
 
 class EcoMealsSerializer(serializers.ModelSerializer):
+    meal_type = serializers.SerializerMethodField()
+
+    def get_meal_type(self, instance):
+        if instance.eco_breakfast:
+            return "Breakfast"
+        elif instance.eco_lunch:
+            return "Lunch"
+        elif instance.eco_dinner:
+            return "Dinner"
+        
     class Meta:
         model = EcoMeals
-        fields = "__all__"
-        model = EcoEducation
-        fields = "__all__"
+        fields = ("co2_reduced", "ecomeals_points", "entry_date", "meal_type")

@@ -46,9 +46,7 @@ class EcoMeals(models.Model):
     eco_dinner = models.BooleanField(default=False)
     co2_reduced = models.FloatField(null=True, blank=True)
     ecomeals_points = models.SmallIntegerField(null=True, blank=True)
-    entry_date = models.DateField(db_index = True, auto_now=True)
+    activity_date = models.DateField(db_index = True, auto_now=True)
 
     def __str__(self):
         return self.user.username
-    
-        #return self.activity_date
