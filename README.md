@@ -58,4 +58,5 @@ python manage.py migrate
 *  EcoEducation EndPoint:  http://127.0.0.1:8000/api/eco-education  (GET returns "text" keyword with text, POST adds 5 points for user with optional "text" input to log what was read)
 *  Ecotransport list endpoint: http://127.0.0.1:8000/api/eco-transport   (supports List i.e. provides list of challenges recorded for the authenticated user, and Create i.e. an authenticated user can record a challenge)
 *  Ecotransport single activity view endpoint: http://127.0.0.1:8000/api/eco-transport/<int:pk>  (fetches data for a specific activity for the authenticated user)
-*  
+*  EcoMeals Endpoint: http://127.0.0.1:8000/api/eco-meals (GET request returns all entries by all users; POST request adds plant-based meal logged by user and calculates total points and co2 emissions reduced by eating plant-based.)
+*  EcoMeals Single User View Endpoint:  http://127.0.0.1:8000/api/eco-meals/<int:pk> (GET request returns all plant-based meals logged by user as well as total points and co2 emissions reduced by each meal.)
