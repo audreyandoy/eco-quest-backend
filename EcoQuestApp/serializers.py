@@ -1,10 +1,9 @@
 from rest_framework import serializers
-from .models import EcoTransport, Profile, EcoMeals
-from .models import EcoTransport, Profile, EcoEducation
+from .models import EcoTransport, Profile, EcoMeals, EcoEducation
 from django.contrib.auth.models import User, Group
 
 class EcoTransportSerializer(serializers.ModelSerializer):
-    co2_reduced = serializers.ReadOnlyField()
+    transport_co2_reduced = serializers.ReadOnlyField()
     ecoTransport_points =  serializers.ReadOnlyField()
     activity_date = serializers.ReadOnlyField()
     

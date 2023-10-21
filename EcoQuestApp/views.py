@@ -41,7 +41,6 @@ class EcoTransportView(generics.ListCreateAPIView):
     queryset = EcoTransport.objects.all()
     serializer_class = EcoTransportSerializer
   
-    #filter the queryset by current user
     def get_queryset(self):
         return EcoTransport.objects.all()
     
@@ -49,16 +48,25 @@ class EcoTransportView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         activity = serializer.validated_data['activity']
         distance = serializer.validated_data['distance']
+        user = serializer.validated_data['user']
         if activity == "walk" or activity == "bicyle":
-            co2_reduced = distance * CO2E_PERMILE_CAR_GRAMS
+            co2_reduced = round(distance * CO2E_PERMILE_CAR_GRAMS, 2)
         #activity = bus
         else:
-            co2_reduced = distance * CO2E_PERMILE_BUS_GRAMS
+            co2_reduced = round(distance * CO2E_PERMILE_BUS_GRAMS, 2)
         #for every 100g of co2 reduced, award 50 points
         ecoTransport_points =math.floor(co2_reduced/100 * POINTS_AWARDED_100GCO2)
-        serializer.save(co2_reduced = co2_reduced, ecoTransport_points=ecoTransport_points)
+        serializer.save(transport_co2_reduced= co2_reduced, ecoTransport_points=ecoTransport_points)
 
-#-------api/eco-transport/<int:pk>-----------
+        #once activity is recorded, update total_points and total_co2e_reduced 
+        # in the profile table for this user
+
+        profile = get_object_or_404(Profile, username = user)
+        profile.total_points += ecoTransport_points
+        profile.total_co2e_reduced += co2_reduced 
+        profile.save()
+
+#---------------api/eco-transport/<int:pk>-----------
 #supports GET for single Eco transport activity
 
 class SingleEcoTransportActivityView(APIView):
@@ -70,21 +78,56 @@ class SingleEcoTransportActivityView(APIView):
         activity = get_object_or_404(EcoTransport, pk=pk)
         serialized_activity =  self.serializer_class(activity)
         return Response(data=serialized_activity.data, status=status.HTTP_200_OK)
+    
+
+#--------------api/eco-transport/<int:userid>-------------
+# #supports GET for activities for a single user
+# class EcoTransportActivityByUser(generics.ListAPIView):
+
+#     serializer_class = EcoTransportSerializer
+
+#     def get(self, request, user):
+#         return EcoTransport.objects.all(user=user)
+        
 
 
-# Profile View
-# TODO this doesn't seem to be working....
-class EcoProfileView(generics.RetrieveAPIView):
-    permission_classes = [IsAuthenticated]
+#------------------api/eco-profile------------------------------
+
+#supports GET and POST 
+#Returns all Profiles[GET]
+#Supports creating and saving a profile to the DB [POST]
+
+class ProfilesView(generics.ListCreateAPIView):
+    #permission_classes = [IsAuthenticated]
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
-    lookup_field = 'user__username'
-
+  
     def get_queryset(self):
-        user = self.request.user
-        print(Profile.objects.all().filter(user=user))
-        return Profile.objects.all().filter(user=user)
+        return Profile.objects.all() 
+    
+    def post(self, request):
+        deserialized_profile = self.serializer_class(data=request.data)
+        if deserialized_profile.is_valid():
+            deserialized_profile.save()
+            return Response(data=deserialized_profile.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response({"message": deserialized_profile.errors}, status=status.HTTP_400_BAD_REQUEST)
+  
 
+
+
+
+#------------------api/eco-profile/<int:pk>---------------------------------
+#supports GET for single user profile
+class SingleProfileView(generics.GenericAPIView):
+    serializer_class = ProfileSerializer
+ 
+    def get(self, request, pk):
+        profile = get_object_or_404(Profile, pk=pk)
+        serialized_profile = self.serializer_class(profile)
+        return Response(data=serialized_profile.data, status=status.HTTP_200_OK)
+
+#--------------------------------------------------------------------------
 
 # EcoEducation View
 def eco_education_view(request, new_content=False):
@@ -106,10 +149,24 @@ class EcoEducation(APIView):
     """
     # permission_classes = [IsAuthenticated]
     serializer_class = EcoEducationSerializer
+    def get(self, request, new_content=False, format=None):
+        if new_content:
+            text = generate_custom_content(max_tokens=200, save_output=False, display_output=True)
+        else:
+            response = provide_example_gpt_response()
+            text = response["choices"][0]["message"]["content"].strip()
 
-    # filter the queryset by current user
-    def get_queryset(self):
-        return EcoEducation.objects.all().filter(user=self.request.user)
+        return Response(data={"text": text}, status=status.HTTP_200_OK)
+
+    def post(self, request, format=None):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            serializer.save(points=5)
+            # Assign 5 points for every passage read
+            # want to post text to read what was last?
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+   
     
     def get(self, request, new_content=False, format=None):
         if new_content:
@@ -219,4 +276,6 @@ class SingleEcoMealsInstanceView(generics.RetrieveAPIView):
     #     # for every 100g of co2 reduced, award 50 points
     #     ecoTransport_points = math.floor(co2_reduced / 100 * POINTS_AWARDED_100GCO2)
     #     serializer.save(co2_reduced=co2_reduced, ecoTransport_points=ecoTransport_points)
-  
+
+    
+
