@@ -69,27 +69,33 @@ class EcoTransportView(generics.ListCreateAPIView):
 #---------------api/eco-transport/<int:pk>-----------
 #supports GET for single Eco transport activity
 
-class SingleEcoTransportActivityView(APIView):
+# class SingleEcoTransportActivityView(APIView):
 
-    #permission_classes = [IsAuthenticated]
-    serializer_class = EcoTransportSerializer
-
-    def get(self, request, pk):
-        activity = get_object_or_404(EcoTransport, pk=pk)
-        serialized_activity =  self.serializer_class(activity)
-        return Response(data=serialized_activity.data, status=status.HTTP_200_OK)
-    
-
-#--------------api/eco-transport/<int:userid>-------------
-# #supports GET for activities for a single user
-# class EcoTransportActivityByUser(generics.ListAPIView):
-
+#     #permission_classes = [IsAuthenticated]
 #     serializer_class = EcoTransportSerializer
 
-#     def get(self, request, user):
-#         return EcoTransport.objects.all(user=user)
-        
+#     def get(self, request, pk):
+#         activity = get_object_or_404(EcoTransport, pk=pk)
+#         serialized_activity =  self.serializer_class(activity)
+#         return Response(data=serialized_activity.data, status=status.HTTP_200_OK)
+    
 
+#--------------api/eco-transport/<int:pk>-------------
+# #supports GET for activities for a single user
+class SingleUserEcoTransportActivityView(generics.ListAPIView):
+
+    serializer_class = EcoTransportSerializer
+
+    def get_queryset(self):
+        user_id = self.kwargs.get('pk')
+        return EcoTransport.objects.filter(user = user_id)
+    
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        
+        response_data = {'Eco-Transport Activities': serializer.data}
+        return Response(response_data, status=status.HTTP_200_OK)
 
 #------------------api/eco-profile------------------------------
 
