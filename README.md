@@ -54,11 +54,16 @@ python manage.py migrate
 
 # Endpoints available
 
-*  Admin site:  http://127.0.0.1:8000/admin
-*  EcoEducation EndPoint:  http://127.0.0.1:8000/api/eco-education  (GET returns "text" keyword with text, POST adds 5 points for user with optional "text" input to log what was read)
+*  Splash page: http://127.0.0.1:8000/
+* Admin site:  http://127.0.0.1:8000/admin
+*  EcoEducation EndPoint:  http://127.0.0.1:8000/api/eco-education
+  - GET returns a list of all education activities logged in the db
+  - POST adds 5 points for user and accepts an optional "text" input to log what was read to db (future chatgpt seeding)
+* EcoEducation single user activity list endpoint: http://127.0.0.1:8000/api/eco-transport/<int:pk>
+* EcoEducation Text Endpoint http://127.0.0.1:8000/api/eco-education-text/<int:pk> 
+  - GET returns "text" keyword with text that is customized to the "user_id" pk based on their profile information.
 *  Ecotransport list endpoint: http://127.0.0.1:8000/api/eco-transport   (supports List i.e. provides list of challenges recorded for the authenticated user, and Create i.e. an authenticated user can record a challenge)
 *  Ecotransport single activity view endpoint: http://127.0.0.1:8000/api/eco-transport/<int:pk>  (fetches data for a specific activity for the authenticated user)
-*  
 
 
 # Testing
@@ -66,5 +71,5 @@ You can use httpie in the dev dependencies to test.  Since our URLs are currentl
 make sure a GET with parameters looks something line this:
 
 ```
-http GET http://127.0.0.1:8000/api/eco-education?user_id=1
+http GET http://127.0.0.1:8000/api/eco-education-text/1
 ```
