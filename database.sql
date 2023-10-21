@@ -34,75 +34,61 @@ VALUES ('doris', 18, 'Las Vegas, NV', 0, 0);
 CREATE TABLE plantbased_activity (
     id SERIAL PRIMARY KEY,
     user_id int,
-    pb_breakfast bool,
-    mb_breakfast bool,
-    pb_lunch bool,
-    mb_lunch bool,
-    pb_dinner bool,
-    mb_dinner bool,
-    total_pba_points int,
+    eco_breakfast bool,
+    eco_lunch bool,
+    eco_dinner bool,
+    co2_reduced int,
+    ecomeals_points int,
     CONSTRAINT user_id FOREIGN KEY(user_id) REFERENCES profile(user_id)
 );
 ------------------ PLANTBASED ACTIVITY TABLE ------------------          
 INSERT INTO plantbased_activity(
         user_id,
-        pb_breakfast,
-        mb_breakfast,
-        pb_lunch,
-        mb_lunch,
-        pb_dinner,
-        mb_dinner,
-        total_pba_points
+        eco_breakfast,
+        eco_lunch,
+        eco_dinner,
+        co2_reduced,
+        ecomeals_points,
     )
 VALUES (
         3,
         false,
         true,
-        true,
         false,
-        false,
-        true,
-        15
+        15,
+        20
     );
 INSERT INTO plantbased_activity(
         user_id,
-        pb_breakfast,
-        mb_breakfast,
-        pb_lunch,
-        mb_lunch,
-        pb_dinner,
-        mb_dinner,
-        total_pba_points
+        eco_breakfast,
+        eco_lunch,
+        eco_dinner,
+        co2_reduced,
+        ecomeals_points,
     )
 VALUES (
         2,
         true,
         false,
-        true,
         false,
-        false,
-        true,
-        15
+        15,
+        20
     );
 INSERT INTO plantbased_activity(
         user_id,
-        pb_breakfast,
-        mb_breakfast,
-        pb_lunch,
-        mb_lunch,
-        pb_dinner,
-        mb_dinner,
-        total_pba_points
+        eco_breakfast,
+        eco_lunch,
+        eco_dinner,
+        co2_reduced,
+        ecomeals_points,
     )
 VALUES (
         3,
         false,
-        true,
-        true,
-        false,
         false,
         true,
-        15
+        15,
+        20
     );
 ------------------ ECOTRANSPORT TABLE ------------------          
 CREATE TABLE ecotransport (
