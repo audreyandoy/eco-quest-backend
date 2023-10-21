@@ -201,6 +201,7 @@ class EcoMealsView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         # Saves EcoMeals instance
+        user = serializer.validated_data['user']
         eco_breakfast = serializer.validated_data['eco_breakfast']
         eco_lunch = serializer.validated_data['eco_lunch']
         eco_dinner = serializer.validated_data['eco_dinner']
@@ -214,6 +215,13 @@ class EcoMealsView(generics.ListCreateAPIView):
         eco_meals_instance.co2_reduced = co2_reduced
         eco_meals_instance.ecomeals_points = ecomeals_points
         eco_meals_instance.save()
+
+        # Update Profile with points from EcoMeals
+        profile = get_object_or_404(Profile, id = user)
+        profile.total_points += ecomeals_points
+        profile.total_co2e_reduced += co2_reduced 
+        profile.save()
+
 
     def get_co2_reduced(self, user_ecomeals_input):
         co2_reduced = 0
