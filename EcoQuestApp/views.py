@@ -217,10 +217,7 @@ class EcoMealsView(generics.ListCreateAPIView):
         eco_meals_instance.save()
 
         # Update Profile with points from EcoMeals
-        profile = get_object_or_404(Profile, id = user)
-        profile.total_points += ecomeals_points
-        profile.total_co2e_reduced += co2_reduced 
-        profile.save()
+        self.update_user_profile(user, co2_reduced, ecomeals_points)
 
 
     def get_co2_reduced(self, user_ecomeals_input):
@@ -241,6 +238,12 @@ class EcoMealsView(generics.ListCreateAPIView):
         ecomeals_points = math.floor(user_co2_reduced / 100 * POINTS_AWARDED_100GCO2)
 
         return ecomeals_points
+
+    def update_user_profile(self, user, user_co2_reduced, user_ecomeals_points):
+        profile = Profile.objects.get(user=user)
+        profile.total_co2e_reduced += user_co2_reduced
+        profile.total_points += user_ecomeals_points
+        profile.save()
 
 #=================api/eco-meals/<int:pk>=======================
 #supports GET for a single EcoMeals instance queried by primary key
