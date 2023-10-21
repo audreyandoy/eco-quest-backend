@@ -246,34 +246,24 @@ class EcoMealsView(generics.ListCreateAPIView):
         profile.save()
 
 #=================api/eco-meals/<int:pk>=======================
-#supports GET for a single EcoMeals instance queried by primary key
+#supports GET for all EcoMeals associated with the specified primary key
 
-class SingleEcoMealsInstanceView(generics.RetrieveAPIView):
+class SingleUserAllEcoMealInstancesView(generics.ListAPIView):
     serializer_class = EcoMealsSerializer
-    queryset = EcoMeals.objects.all()
 
-    def create_response(self, response, queryset):
-        # Fetch the model instance
-        ecomeal_instance = get_object_or_404(queryset)
+    def get_queryset(self):
+        user_id = self.kwargs.get('pk')
+        return EcoMeals.objects.filter(user=user_id)
 
-        # Determine which meal was plant-based
-        ecomeal = None
-        
-        if ecomeal_instance.eco_breakfast == True:
-            ecomeal = "Breakfast"
-        elif ecomeal_instance.eco_lunch == True:
-            ecomeal = "Lunch"
-        elif ecomeal_instance.eco_dinner == True:
-            ecomeal = "Dinner"
-        
-        # Create response data
-        response_data = {"meal_type": ecomeal,
-                         "co2_reduced": ecomeal_instance.co2_reduced,
-                         "date_logged": ecomeal_instance.entry_date
-                         }
-        
-        # Return response data
-        return Response(response_data, status=200) 
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True) 
+
+        response_data = {
+            'meals': serializer.data
+        }
+
+        return Response(response_data, status=200)
     
     # Need to update this section
     # def perform_create(self, serializer):
