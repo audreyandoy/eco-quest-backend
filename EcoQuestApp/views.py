@@ -260,7 +260,7 @@ class SingleUserAllEcoMealInstancesView(generics.ListAPIView):
         serializer = self.get_serializer(queryset, many=True) 
 
         response_data = {
-            'meals': serializer.data
+            'EcoMeals': serializer.data
         }
 
         return Response(response_data, status=200)
