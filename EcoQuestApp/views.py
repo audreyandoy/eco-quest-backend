@@ -150,7 +150,7 @@ class SingleProfileView(generics.GenericAPIView):
 # EcoEducation View
 def eco_education_view(request, new_content=False):
     """
-    Basic view
+    Basic text returning view - replaced by
     return raw text content from chatgpt
     """
     if new_content:
@@ -161,17 +161,7 @@ def eco_education_view(request, new_content=False):
     return HttpResponse(text)
 
 
-# supports GET for single user profile
-class SingleProfileView(generics.GenericAPIView):
-    serializer_class = ProfileSerializer
-
-    def get(self, request, pk):
-        profile = get_object_or_404(Profile, pk=pk)
-        serialized_profile = self.serializer_class(profile)
-        return Response(data=serialized_profile.data, status=status.HTTP_200_OK)
-
-
-class EcoEducationText(generics.GenericAPIView):
+class EcoEducationTextView(generics.GenericAPIView):
     """
     GET -   Returns a new ChatGPT generated text for the sent "user_id"
     """
@@ -197,7 +187,7 @@ class EcoEducationText(generics.GenericAPIView):
         return Response(data={"text": text}, status=status.HTTP_200_OK)
 
 
-class EcoEducation(generics.ListCreateAPIView):
+class EcoEducationView(generics.ListCreateAPIView):
     """
     GET -   Returns a list of all EcoEducation Data Entries
     POST -  Creates a new 5 point entry for the user reading the text & updates profile stats
@@ -205,11 +195,10 @@ class EcoEducation(generics.ListCreateAPIView):
     """
 
     serializer_class = EcoEducationSerializer
-    queryset = EcoTransport.objects.all()
 
     def get_queryset(self):
         """return list of all education entries"""
-        return self.queryset
+        return EcoEducation.objects.all()
 
     def perform_create(self, serializer):
         """log user education activity and update user profile stats"""

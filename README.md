@@ -67,8 +67,7 @@ python manage.py migrate
 
 
 # Testing
-You can use httpie in the dev dependencies to test.  Since our URLs are currently setup without a `/` at the end 
-make sure a GET with parameters looks something line this:
+You can use httpie in the dev dependencies to test.  For pk URL try something line this:
 
 ```
 http GET http://127.0.0.1:8000/api/eco-education-text/1
