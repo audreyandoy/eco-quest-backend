@@ -51,4 +51,4 @@ class EcoMeals(models.Model):
     def __str__(self):
         return self.user.username
     
-        #return self.activity_date
+        return self.activity_date
