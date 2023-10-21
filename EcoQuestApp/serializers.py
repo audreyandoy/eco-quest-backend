@@ -28,6 +28,14 @@ class EcoEducationSerializer(serializers.ModelSerializer):
 
 
 class EcoMealsSerializer(serializers.ModelSerializer):
+    def get_meal_type(self, instance):
+        if instance.eco_breakfast:
+            return "Breakfast"
+        elif instance.eco_lunch:
+            return "Lunch"
+        elif instance.eco_dinner:
+            return "Dinner"
+        
     class Meta:
         model = EcoMeals
         fields = "__all__"
