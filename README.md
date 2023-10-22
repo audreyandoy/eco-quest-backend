@@ -1,6 +1,8 @@
 ## Welcome to EcoQuest!
 
 # Installation and Setup
+
+## Virutal Environment
 This program uses `pipenv` to install and manage dependecies in the `Pipfile`
 Pipenv documentation is here:  https://docs.pipenv.org/
 If you cannot install pipenv directly per the instructions you can perform the following:
@@ -17,6 +19,12 @@ Within the virtual environment, then you can install EcoQuest by:
 pipenv install
 ```
 
+You can also install from the `requrirements.txt` file as
+```
+pip install -r requirements.txt
+```
+
+## Chat GPT API Key
 The ChatGPT content generator requires an API key in order to run it.
 You can create your own free account and generate the API key.
 Information for getting an OpenAI trial account is here:
