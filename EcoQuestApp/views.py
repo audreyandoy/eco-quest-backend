@@ -32,7 +32,7 @@ CO2E_MEATBASED_LUNCH_GRAMS = 3800
 CO2E_MEATBASED_DINNER_GRAMS = 4800
 
 # Eco Education Parameters
-NUM_WORDS = 200  # Change to 500 once live
+NUM_WORDS = 500  # Change to 500 once live
 CHALLENGE_NAMES = ["Eat Less Meat", "Eco-Friendly Transportation"]
 NEW_CONTENT = False  # Generate new content from chatGPT, change to True once live
 
@@ -62,10 +62,9 @@ class EcoTransportView(generics.ListCreateAPIView):
         activity = serializer.validated_data["activity"]
         distance = serializer.validated_data["distance"]
         user = serializer.validated_data["user"]
-        if activity == "walk" or activity == "bicycle":
+        if ("walk" in activity.lower()) or ("bicycl" in activity.lower()):
             co2_reduced = round(distance * CO2E_PERMILE_CAR_GRAMS, 2)
-        # activity = bus
-        else:
+        else:  # assuming bus
             co2_reduced = round(distance * CO2E_PERMILE_BUS_GRAMS, 2)
         # for every 100g of co2 reduced, award 50 points
         ecoTransport_points = math.floor(co2_reduced / 100 * POINTS_AWARDED_100GCO2)
@@ -84,8 +83,6 @@ class EcoTransportView(generics.ListCreateAPIView):
 
 # ---------------api/eco-transport/<int:pk>-----------
 # supports GET for single Eco transport activity
-
-
 # class SingleEcoTransportActivityView(APIView):
 
 #     #permission_classes = [IsAuthenticated]
@@ -161,7 +158,7 @@ def eco_education_view(request, new_content=False):
     return raw text content from chatgpt
     """
     if new_content:
-        text = generate_custom_content(save_output=False, display_output=True)
+        text = generate_custom_content(save_output=True, display_output=True)
     else:
         response = provide_example_gpt_response()
         text = response["choices"][0]["message"]["content"].strip()
@@ -177,11 +174,11 @@ class EcoEducationTextView(generics.GenericAPIView):
 
     def get(self, request, pk, format=None):
         profile = get_object_or_404(Profile, pk=pk)
-        print(profile)
+        serialized_profile = self.serializer_class(profile)
         # TODO add summary of latest day's activities
         if NEW_CONTENT:
             text = generate_custom_content(
-                user_info=str(profile),
+                user_info=str(serialized_profile.data),
                 topics=CHALLENGE_NAMES,
                 max_words=NUM_WORDS,
                 save_output=False,
@@ -191,7 +188,7 @@ class EcoEducationTextView(generics.GenericAPIView):
             response = provide_example_gpt_response()
             text = response["choices"][0]["message"]["content"].strip()
 
-        return Response(data={"text": text}, status=status.HTTP_200_OK)
+        return Response(data={"text": text, "profile":str(serialized_profile.data)}, status=status.HTTP_200_OK)
 
 
 class EcoEducationView(generics.ListCreateAPIView):
@@ -221,7 +218,7 @@ class EcoEducationView(generics.ListCreateAPIView):
 
     @staticmethod
     def update_user_profile(user, user_co2_reduced, user_points):
-        profile = Profile.objects.get(user=user)
+        profile = Profile.objects.get(username=user)
         profile.total_co2e_reduced += user_co2_reduced
         profile.total_points += user_points
         profile.save()
@@ -270,8 +267,8 @@ class EcoMealsView(generics.ListCreateAPIView):
             eco_breakfast=eco_breakfast, eco_lunch=eco_lunch, eco_dinner=eco_dinner
         )
 
-        co2_reduced = self.get_co2_reduced(self.request.data)
-        ecomeals_points = self.get_ecomeals_points(co2_reduced)
+        co2_reduced = self.calculate_co2_reduced(self.request.data)
+        ecomeals_points = self.calculate_ecomeals_points(co2_reduced)
 
         # Update EcoMeals instance with co2_reduced and ecomeals_points results
         eco_meals_instance = serializer.instance
@@ -299,13 +296,13 @@ class EcoMealsView(generics.ListCreateAPIView):
 
         return co2_reduced
 
-    def calculate_ecomeals_points(user_co2_reduced):
+    def calculate_ecomeals_points(self, user_co2_reduced):
         ecomeals_points = math.floor(user_co2_reduced / 100 * POINTS_AWARDED_100GCO2)
 
         return ecomeals_points
 
-    def update_user_profile(user, user_co2_reduced, user_ecomeals_points):
-        profile = Profile.objects.get(user=user)
+    def update_user_profile(self, user, user_co2_reduced, user_ecomeals_points):
+        profile = Profile.objects.get(username=user)
         profile.total_co2e_reduced += user_co2_reduced
         profile.total_points += user_ecomeals_points
         profile.save()

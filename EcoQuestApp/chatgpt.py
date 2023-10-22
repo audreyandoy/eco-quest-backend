@@ -45,12 +45,13 @@ EXAMPLE_CHALLENGES = ["Travel More Sustainably", "Eat More Plant-Based Food"]
 EXAMPLE_PREVIOUS_CONTENT = None
 
 SYSTEM_TEXT = """As a sustainability expert, advise our EcoQuest app user on how to improve their habits
-for living more sustainably based on their usage data and topics provided.  Please provide a text response without
-greetings and word count <= """
+for living more sustainably based on their usage data and topics provided.  Please provide a text response that addresses
+ the user's name and text word count <= """
 
-PROMPT_TEXT = f"""Provide one of the following based on the User Information (1) background educational
+PROMPT_TEXT = f"""Provide one of the following based on the User Information (1) background scientific based educational
 material on a unique aspect of one of the challenge topics,  (2) a tip to the user on how to increase their activity levels, 
-or (3) how to add add new sustainability activities related to one of the challenge topic.
+or (3) how to add add new sustainability activities related to one of the challenge topic.  Randomly pick which of the 3 
+options with higher probability on (1) and do not include the option number in your response.
 """
 
 

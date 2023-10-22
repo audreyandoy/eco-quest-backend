@@ -39,5 +39,4 @@ class EcoMealsSerializer(serializers.ModelSerializer):
         
     class Meta:
         model = EcoMeals
-        fields = ("co2_reduced", "ecomeals_points", "entry_date", "meal_type")
-
+        fields = "__all__"
