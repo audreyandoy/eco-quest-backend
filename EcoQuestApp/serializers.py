@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from .models import EcoTransport, Profile, EcoMeals, EcoEducation
-from django.contrib.auth.models import User, Group
 
 class EcoTransportSerializer(serializers.ModelSerializer):
     transport_co2_reduced = serializers.ReadOnlyField()

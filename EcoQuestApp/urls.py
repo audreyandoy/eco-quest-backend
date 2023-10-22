@@ -8,8 +8,10 @@ urlpatterns = [
     path('eco-transport/<int:pk>', views.SingleUserEcoTransportActivityView.as_view()),
     path('eco-profile/<int:pk>', views.SingleProfileView.as_view()),
     path('eco-profile', views.ProfilesView.as_view()),
-    # path('eco-education', views.EcoEducationView.as_view()),
-    path('eco-education', views.eco_education_view), 
+    # path('eco-education', views.eco_education_view),
+    path('eco-education', views.EcoEducationView.as_view()),
+    path('eco-education/<int:pk>', views.SingleUserAllEcoEducationInstancesView.as_view()),
+    path('eco-education-text/<int:pk>', views.EcoEducationTextView.as_view()),
     path('eco-meals', views.EcoMealsView.as_view()),
     path('eco-meals/<int:pk>', views.SingleUserAllEcoMealInstancesView.as_view()),
 ]

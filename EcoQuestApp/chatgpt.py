@@ -31,7 +31,8 @@ if not os.path.exists(output_folder):
 
 # Select Model
 # models = openai.Model.list()
-MODEL = "gpt-4-0314"  # "gpt-3.5-turbo"  # "gpt2"
+MODEL = "gpt-4-0314"
+# MODEL = "gpt-3.5-turbo"  # "gpt2"
 
 # Stored Prompts
 EXAMPLE_USER_DATA = {  # Example User Data
@@ -39,16 +40,18 @@ EXAMPLE_USER_DATA = {  # Example User Data
     "activities": ["walked to work", "took bus to show", "walked to grocery"],
 }
 
+EXAMPLE_CHALLENGES = ["Travel More Sustainably", "Eat More Plant-Based Food"]
+
 EXAMPLE_PREVIOUS_CONTENT = None
 
-SYSTEM_TEXT = """As a sustainability expert, you will be advising our EcoQuest app user how to improve their habits
-for living more sustainably based on their usage data and topic provided.  Please provide only the text response 
-in 200 words or less, appropriate for middle school, and without greetings.  
-"""
+SYSTEM_TEXT = """As a sustainability expert, advise our EcoQuest app user on how to improve their habits
+for living more sustainably based on their usage data and topics provided.  Please provide a text response that addresses
+ the user's name and text word count <= """
 
-PROMPT_TEXT = f"""Provide one of the following based on the User Information (1) background educational material,
-(2) a tip to the user on how to increase their good activity, or (3) how to add add new sustainability activities related
-to the challenge. User Information: 
+PROMPT_TEXT = f"""Provide one of the following based on the User Information (1) background scientific based educational
+material on a unique aspect of one of the challenge topics,  (2) a tip to the user on how to increase their activity levels, 
+or (3) how to add add new sustainability activities related to one of the challenge topic.  Randomly pick which of the 3 
+options with higher probability on (1) and do not include the option number in your response.
 """
 
 
@@ -63,23 +66,16 @@ def estimate_tokens(text, model_name="gpt2"):
     return len(tokens)
 
 
-# # Estimate tokens
-# for i, msg in enumerate(messages):
-#     estimated_tokens = estimate_tokens(msg["content"])
-#     print(f"{msg['role']} message {i} est tokens:", estimated_tokens)
-
 # Database call functions
-# TODO #1 need one to retrieve user data from database and pre-process to reduce tokens
-# TODO #2 potentially save response to database to keep for seeding next prompt/speeding up service
 # TODO #3 function to get last saved prompt
-# TODO #4 how to handle when text is marked "read" and given points?  Per "quest".
 
 
 # Function to call GPT and generate content based on the conversation context and user profile.
 def generate_custom_content(
     user_info=EXAMPLE_USER_DATA,
+    topics=EXAMPLE_CHALLENGES,
     previous_content=EXAMPLE_PREVIOUS_CONTENT,
-    max_tokens=200,
+    max_words=200,
     save_output=False,
     display_output=False,
 ):
@@ -88,24 +84,30 @@ def generate_custom_content(
 
     :param user_info: dict, containing user's data such as age, sex, location and previous app usage summary.
     :param previous_content: str, content that the user has read or interacted with in the past.
-    :param max_tokens: int, the maximum length of the generated content.
+    :param max_words: int, the maximum words of the generated content.
     :return: str, custom-generated content for the user.
     """
+    # TODO add preprocessing to reduce tokens
 
     # Construct the conversation history or context from previous_content and user_info.
     # This part is highly dependent on how your application stores and manages user data.
-    prompt = PROMPT_TEXT + str(user_info)
+    prompt = PROMPT_TEXT + ", User info: " + str(user_info) + ", Topics:" + str(topics)
     if previous_content is not None:
-        prompt += f"User's previous readings include: {previous_content}."
+        prompt += (
+            f". Please provide something previous readings include: {previous_content}."
+        )
 
     messages = [
-        {"role": "system", "content": SYSTEM_TEXT},
+        {"role": "system", "content": SYSTEM_TEXT + f"{max_words}"},
         {"role": "user", "content": prompt},
+        # {"role": "system", "content": "You are a ChatGPT expert"},
+        # {"role": "user", "content": "How do I fix the 502 bad gateway error?"},
     ]
 
     # Get ChatGPT Response
     completion = openai.ChatCompletion.create(
-        model=MODEL, messages=messages, max_tokens=max_tokens
+        model=MODEL,
+        messages=messages,  # max_tokens=max_tokens
     )
 
     # Extract the text from the GPT-3 response
@@ -136,13 +138,17 @@ def generate_custom_content(
 
 
 def provide_example_gpt_response():
-    f = open(os.path.join(os.path.dirname(__file__), 'chatgpt_full_result_example.json'))
+    f = open(
+        os.path.join(os.path.dirname(__file__), "chatgpt_full_result_example.json")
+    )
     r = json.load(f)
     f.close()
     return r
 
 
 if __name__ == "__main__":
+    print("Is it calling this?")
+    print(NEW_CHATGPT)
     if NEW_CHATGPT:
         generate_custom_content(save_output=True, display_output=True)
     else:
