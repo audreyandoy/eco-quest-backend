@@ -60,3 +60,4 @@ Werkzeug==2.0.2
 wonderwords==2.2.0
 wrapt==1.12.1
 yapf==0.31.0
+psycopg2-binary==2.9.9
