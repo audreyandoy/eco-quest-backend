@@ -1,1 +1,1 @@
-web: gunicorn EcoQuest.wsgi --log-file -
+web: gunicorn EcoQuest.wsgi
