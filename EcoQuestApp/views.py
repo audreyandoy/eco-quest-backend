@@ -16,6 +16,9 @@ from rest_framework.response import Response
 from rest_framework import authentication
 from django.http import HttpResponse
 from .chatgpt import provide_example_gpt_response, generate_custom_content
+import os
+import openai
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 
 CO2E_PERMILE_CAR_GRAMS = 400
@@ -34,7 +37,7 @@ CO2E_MEATBASED_DINNER_GRAMS = 4800
 # Eco Education Parameters
 NUM_WORDS = 500  # Change to 500 once live
 CHALLENGE_NAMES = ["Eat Less Meat", "Eco-Friendly Transportation"]
-NEW_CONTENT = False  # Generate new content from chatGPT, change to True once live
+NEW_CONTENT = True  # Generate new content from chatGPT, change to True once live
 
 
 # Top Level API Splash Page

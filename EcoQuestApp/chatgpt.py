@@ -21,6 +21,11 @@ import openai
 import requests
 from transformers import AutoTokenizer
 
+import openai
+openai.api_key = os.getenv("OPENAI_API_KEY")
+print(openai.api_key)
+
+
 NEW_CHATGPT = False
 
 #  App house-keeping
@@ -31,8 +36,8 @@ if not os.path.exists(output_folder):
 
 # Select Model
 # models = openai.Model.list()
-MODEL = "gpt-4-0314"
-# MODEL = "gpt-3.5-turbo"  # "gpt2"
+# MODEL = "gpt-4-0314"
+MODEL = "gpt-3.5-turbo"  # "gpt2"
 
 # Stored Prompts
 EXAMPLE_USER_DATA = {  # Example User Data
