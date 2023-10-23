@@ -107,6 +107,8 @@ local.properties
 # Created by https://www.gitignore.io/api/python
 # also see:  https://github.com/github/gitignore/blob/master/Python.gitignore
 
+
+.env 
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__
