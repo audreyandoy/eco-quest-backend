@@ -78,3 +78,5 @@ whitenoise==6.6.0
 wonderwords==2.2.0
 wrapt==1.12.1
 yapf==0.31.0
+openai==0.28.1
+
