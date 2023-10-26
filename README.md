@@ -1,6 +1,8 @@
 ## Welcome to EcoQuest!
 
 # Installation and Setup
+
+## Virutal Environment
 This program uses `pipenv` to install and manage dependecies in the `Pipfile`
 Pipenv documentation is here:  https://docs.pipenv.org/
 If you cannot install pipenv directly per the instructions you can perform the following:
@@ -17,6 +19,12 @@ Within the virtual environment, then you can install EcoQuest by:
 pipenv install
 ```
 
+You can also install from the `requrirements.txt` file as
+```
+pip install -r requirements.txt
+```
+
+## Chat GPT API Key
 The ChatGPT content generator requires an API key in order to run it.
 You can create your own free account and generate the API key.
 Information for getting an OpenAI trial account is here:
@@ -39,18 +47,43 @@ The program will automatically run on port 8000
 
 # Data Admin Guidance
 
+## Admin Django Superuser
+
 To run the project you need to create a superuser for yourself.
 That way you can view the information through the admin interface (including adding users)
 ```
 python manage.py createsuperuser
 ```
 
-To migrate db models
+## Sqlite3 db 
+To migrate sqlite db models
 ```
 python manage.py makemigrations
 python manage.py migrate
 ```
 
+## Postgres db migration
+
+To use the postgres db first install postgres onto your machine and set the postgres user to `postgres` to match 
+what is in the settings.py file.
+
+```
+sudo -u postgres psql  # to connect to postgres
+```
+
+Within the postgres command line utility do the following:
+```
+\password postgres  # set password for user postgres to "postgres"
+CREATE DATABASE eco_db;  # create the eco_db
+\c eco_db   # to connect to the eco_db
+\q   # to quit
+```
+
+In the command line inside the project type the following
+```
+python manage.py migrate --run-syncdb  # sync to the postgres db
+python manage.py loaddata data.json  # to load data to the new database
+```
 
 # Endpoints available
 
